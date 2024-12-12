@@ -47,8 +47,8 @@ colnames(NOCAspatial)
 Exposure custom link function
 ```{r}
 remove(..exposure) # Remove exposure before plotting
-# logistic exposure function method 2. this one was used.         
-#library(MASS)
+# logistic exposure function method 2.        
+
 logexp <- function(exposure = 1) {
   get_exposure <- function() {
     if (exists("..exposure", env=.GlobalEnv))
@@ -186,7 +186,7 @@ AIC table and top model correlations and convergence
 # Make AIC table
   AICtable <-   aictab(Cand, sort = TRUE); AICtable
   AICt<-as.data.frame(AICtable)
-  write_csv(AICt, "~/Downloads/AICtable.csv")
+  write_csv(AICt, "~/AICtable.csv")
 
 # Checking variance inflation factors
   performance::check_collinearity(Cand[[20]]) # Low correlation
@@ -199,7 +199,7 @@ AIC table and top model correlations and convergence
 
 Plotting main effects using visreg
 ```{r}
-# Set ..exposure variable in the global environment,
+# Set ..exposure variable in the global environment
 ..exposure <- mean(NOCAspatial$Exposure)
 
 # Marginal plots, and see fitted values
