@@ -1,6 +1,6 @@
 ---
-title: "NOCA Manuscript Code"
-
+title: "Multi-scale spatial effects determine nest success in small urban forest patches - Manuscript - Analysis code"
+Authors: Ohad Paris & Colin Studds
 ---
 
 
@@ -15,13 +15,14 @@ library(MuMIn)
 library(visreg) 
 library(interactions)
 library(ggplot2)
+library(corrplot)
 ```
 
 
 Dataset and scaling of independent variables
 ```{r}
 
-NOCAspatial <- read.csv("~/NOCAspatial_short.csv",header=TRUE)
+NOCAspatial <- read.csv("~/Documents/PhD Project/Manuscripts Dec 2023/Chapter 1/Submitted to Wildlife Letters Sep 2024/Paris_Studds_Revisions_Nov2024/December Revisions/Version for submission/NOCAspatial_short.csv",header=TRUE)
 
 # Scaling variables
 NOCAspatial$scShrubDtc <- c(scale(NOCAspatial$ShrubDtc, scale=TRUE))
@@ -226,7 +227,7 @@ NOCAspatial$Urban <- cut(NOCAspatial$scDeveloped_Low,
 fit4 <- lme4::glmer(Success ~ scOverstoryDtc + scNumGaps + Urban * scDisToEdge + (1|Year), data = NOCAspatial, family = binomial(link=logexp(NOCAspatial$Exposure)), 
                           control = glmerControl(optimizer = "bobyqa"),nAGQ = 4)
 
-interactions::interact_plot(fit4, pred=scDisToEdge, modx=Urban, colors=c("cornflowerblue","black"), int.width = .95,
+interactions::interact_plot(fit4, pred=scDisToEdge, modx=Urban, colors=c("cornflowerblue","black"), 
                             lty=1,  plot.points=T, point.shape=T,#modx.values="plus-minus",
                             x.label="\n Distance to Edge", y.label = "Probability of Success \n",
                            legend.label = "Development\n Level", modx.labels = c("Less Developed", "More Developed"),
@@ -239,7 +240,7 @@ theme_bw()+
 
 # Based on mean and sd's (intersection more accurately depicted; not in publication)
 
-interactions::interact_plot(Cand[[20]], pred=scDisToEdge, modx=scDeveloped_Low, colors=c("cornflowerblue","black"),interval = TRUE,int.type = "prediction", int.width = .95,
+interactions::interact_plot(Cand[[20]], pred=scDisToEdge, modx=scDeveloped_Low, colors=c("cornflowerblue","black"),#interval = TRUE,int.type = "prediction", int.width = .95,
                             lty=1,  plot.points=T, point.shape=T, modx.values = c(-1, 1), #Set at +-1 sd or modx.values="plus-minus",
                             x.label="\n Distance to Edge", y.label = "Probability of Success \n",
                             legend.label = "Development\n Level", modx.labels = c("Less Developed", "More Developed"),
@@ -253,7 +254,7 @@ interactions::interact_plot(Cand[[20]], pred=scDisToEdge, modx=scDeveloped_Low, 
 
 Producing a correlation matrix plot
 ```{r}
-library(corrplot)
+
 colnames(NOCAspatial)
 corNOCAspatial <- NOCAspatial[, c(24:36)] # Select the columns of interest
 
@@ -265,9 +266,6 @@ colnames(corNOCAspatial) <- c("ShrubDen", "MidstoryDen","OSden","GapWeight", "Nu
 cor <- cor(corNOCAspatial)
 
 corrplot(cor, type="upper", order="hclust", tl.cex = 0.9, cl.cex = 1, mar=c(0,0,0,0), tl.col='black') ## mar is margins (set to zero on all sides)
-
-psych::describe(NOCAspatial$Deciduous_Forest)
-
 
 ```
 
