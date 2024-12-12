@@ -26,7 +26,7 @@ NOCAspatial <- read.csv("~/NOCAspatial_short.csv",header=TRUE)
 # Scaling variables
 NOCAspatial$scShrubDtc <- c(scale(NOCAspatial$ShrubDtc, scale=TRUE))
 NOCAspatial$scMidstoryDtc <- c(scale(NOCAspatial$MidstoryDtc, scale=TRUE))
-NOCAspatial$scOverstoryDtc <- c(scale(NOCAspatial$OverstoryDtc, scale=TRUE)); class(NOCAspatial$scOverstoryDtc)
+NOCAspatial$scOverstoryDtc <- c(scale(NOCAspatial$OverstoryDtc, scale=TRUE))
 NOCAspatial$scTotalGapDomin <- c(scale(NOCAspatial$totalGapDomin, scale=TRUE))
 NOCAspatial$scNumGaps <- c(scale(NOCAspatial$numGaps, scale=TRUE))
 NOCAspatial$scDisToEdge <- c(scale((NOCAspatial$DisToEdge), scale=TRUE))####### sqrt
