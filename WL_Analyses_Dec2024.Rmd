@@ -8,7 +8,6 @@ Required libraries
 ```{r}
 library(AICcmodavg)
 library(lme4)
-library(MASS)
 library(tidyverse)
 library(performance)
 library(MuMIn)
@@ -30,14 +29,14 @@ NOCAspatial$scMidstoryDtc <- c(scale(NOCAspatial$MidstoryDtc, scale=TRUE))
 NOCAspatial$scOverstoryDtc <- c(scale(NOCAspatial$OverstoryDtc, scale=TRUE))
 NOCAspatial$scTotalGapDomin <- c(scale(NOCAspatial$totalGapDomin, scale=TRUE))
 NOCAspatial$scNumGaps <- c(scale(NOCAspatial$numGaps, scale=TRUE))
-NOCAspatial$scDisToEdge <- c(scale((NOCAspatial$DisToEdge), scale=TRUE))####### sqrt
+NOCAspatial$scDisToEdge <- c(scale((NOCAspatial$DisToEdge), scale=TRUE))
 NOCAspatial$scDeveloped_Open_Space <- c(scale(NOCAspatial$Developed_Open_Space, scale=TRUE))
 NOCAspatial$scDeveloped_Low <- c(scale((NOCAspatial$Developed_Low), scale=TRUE))
 NOCAspatial$scDeveloped_Med <- c(scale(NOCAspatial$Developed_Med, scale=TRUE))
 NOCAspatial$scDeveloped_Hi <- c(scale(NOCAspatial$Developed_Hi, scale=TRUE))
 NOCAspatial$scDeciduous_Forest <- c(scale(NOCAspatial$Deciduous_Forest, scale=TRUE))
 NOCAspatial$scAreaStudySite <- c(scale(NOCAspatial$AreaStudySite, scale=TRUE))
-NOCAspatial$NestHeight[is.na(NOCAspatial$NestHeight)]<-mean(NOCAspatial$NestHeight,na.rm=TRUE) #Getting rid of nest height NA's by estimation
+NOCAspatial$NestHeight[is.na(NOCAspatial$NestHeight)]<-mean(NOCAspatial$NestHeight,na.rm=TRUE) #Getting rid of nest height NA's by interpolation
 NOCAspatial$scNestHeight <- c(scale(as.numeric(NOCAspatial$NestHeight), scale=TRUE))
 
 colnames(NOCAspatial)
@@ -184,9 +183,9 @@ AIC table and top model correlations and convergence
 ```{r}  
 
 # Make AIC table
-  AICtable <-   aictab(Cand, sort = TRUE); AICtable
+  AICtable <- AICcmodavg::aictab(Cand, sort = TRUE); AICtable
   AICt<-as.data.frame(AICtable)
-  write_csv(AICt, "~/AICtable.csv")
+  write_csv(AICt, "~/Downloads/AICtable.csv")
 
 # Checking variance inflation factors
   performance::check_collinearity(Cand[[20]]) # Low correlation
@@ -232,7 +231,6 @@ interactions::interact_plot(fit4, pred=scDisToEdge, modx=Urban, colors=c("cornfl
                             x.label="\n Distance to Edge", y.label = "Probability of Success \n",
                            legend.label = "Development\n Level", modx.labels = c("Less Developed", "More Developed"),
                             point.size = 3, line.thickness = 1.5, vary.lty = T, jitter=0.02)+
-#scale_color_gradient(low = "rosybrown1", high = "red4")+
 theme_bw()+
   theme(panel.grid=element_blank()) 
 
@@ -248,7 +246,7 @@ interactions::interact_plot(Cand[[20]], pred=scDisToEdge, modx=scDeveloped_Low, 
  scale_color_gradient(low = "cornflowerblue", high = "black")+
   theme_bw()+
   theme(panel.grid=element_blank()) #+
-#  geom_vline(xintercept = 0.8, linetype = "dotted", color = "blue", size = 0.2)
+
 ```
 
 
@@ -259,8 +257,8 @@ colnames(NOCAspatial)
 corNOCAspatial <- NOCAspatial[, c(24:36)] # Select the columns of interest
 
 ## Change column names to match manuscript text
-colnames(corNOCAspatial) <- c("ShrubDen", "MidstoryDen","OSden","GapWeight", "NumGaps", 
-                              "DisEdge", "DevelopedOpen", "Develop","DevMed", "DevHi", "DecForest",
+colnames(corNOCAspatial) <- c("ShrubDen", "MSDen","OSden","GapWeight", "NumGaps", 
+                              "DisEdge", "DevelopedOpen", "UrbanDev","DevMed", "DevHi", "DecForest",
                               "PatchArea", "NestHeight")
 
 cor <- cor(corNOCAspatial)
